@@ -14,8 +14,8 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: 'demo@example.com',
+    password: 'demo123',
     firstName: '',
     confirmPassword: ''
   });
@@ -30,6 +30,14 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
+    }));
+  };
+
+  const fillDemoCredentials = () => {
+    setFormData(prev => ({
+      ...prev,
+      email: 'demo@example.com',
+      password: 'demo123'
     }));
   };
 
@@ -52,6 +60,13 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
           <CardDescription className="text-gray-600 text-lg">
             {isLogin ? 'Sign in to your wellness journey' : 'Start your wellness journey today'}
           </CardDescription>
+          {isLogin && (
+            <div className="bg-gray-100 p-3 rounded-lg text-sm text-gray-700">
+              <p className="font-medium mb-1">Demo Credentials:</p>
+              <p>Email: demo@example.com</p>
+              <p>Password: demo123</p>
+            </div>
+          )}
         </CardHeader>
         
         <CardContent className="space-y-6">
@@ -141,6 +156,17 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
                   />
                 </div>
               </div>
+            )}
+            
+            {isLogin && (
+              <Button
+                type="button"
+                onClick={fillDemoCredentials}
+                variant="outline"
+                className="w-full h-10 border-gray-300 text-gray-700 hover:bg-gray-50"
+              >
+                Use Demo Credentials
+              </Button>
             )}
             
             <Button
