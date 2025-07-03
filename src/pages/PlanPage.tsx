@@ -3,20 +3,38 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Clock, Check, Calendar as CalendarIcon } from 'lucide-react';
+import CreatePlanModal from '@/components/CreatePlanModal';
 
 const PlanPage = () => {
   const [tasks, setTasks] = useState([
-    { id: 1, task: 'Drink water', time: '8 AM', completed: false },
-    { id: 2, task: 'Drink water', time: '8 AM', completed: false },
-    { id: 3, task: 'Have breakfast', time: '8 AM', completed: false },
-    { id: 4, task: 'Go for a walk', time: '12 PM', completed: false },
-    { id: 5, task: 'Stretch', time: '6 PM', completed: false },
+    { id: 1, task: 'Drink water', time: '8:00', completed: false },
+    { id: 2, task: 'Drink water', time: '8:00', completed: false },
+    { id: 3, task: 'Have breakfast', time: '8:00', completed: false },
+    { id: 4, task: 'Go for a walk', time: '12:00', completed: false },
+    { id: 5, task: 'Stretch', time: '18:00', completed: false },
   ]);
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const toggleTask = (id: number) => {
     setTasks(tasks.map(task => 
       task.id === id ? { ...task, completed: !task.completed } : task
     ));
+  };
+
+  const addNewTasks = (newTasks: any[]) => {
+    const formattedTasks = newTasks.map((task, index) => ({
+      id: tasks.length + index + 1,
+      task: task.task,
+      time: task.time,
+      completed: false
+    }));
+    setTasks([...tasks, ...formattedTasks]);
+  };
+
+  const createNewPlan = () => {
+    setTasks([]);
+    setShowCreateModal(true);
   };
 
   const completedCount = tasks.filter(task => task.completed).length;
@@ -39,7 +57,7 @@ const PlanPage = () => {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>My Daily Plan</CardTitle>
-                <Button size="sm" variant="outline">
+                <Button size="sm" variant="outline" onClick={() => setShowCreateModal(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Task
                 </Button>
@@ -52,29 +70,38 @@ const PlanPage = () => {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {tasks.map((task) => (
-                <div key={task.id} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                  <button
-                    onClick={() => toggleTask(task.id)}
-                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                      task.completed 
-                        ? 'bg-black border-black' 
-                        : 'border-gray-300 hover:border-black'
-                    }`}
-                  >
-                    {task.completed && <Check className="w-4 h-4 text-white" />}
-                  </button>
-                  <div className="flex-1">
-                    <p className={`font-medium ${task.completed ? 'line-through text-gray-500' : 'text-black'}`}>
-                      {task.task}
-                    </p>
-                    <p className="text-sm text-gray-500 flex items-center mt-1">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {task.time}
-                    </p>
-                  </div>
+              {tasks.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="mb-4">No tasks in your plan yet</p>
+                  <Button onClick={() => setShowCreateModal(true)}>
+                    Create Your First Plan
+                  </Button>
                 </div>
-              ))}
+              ) : (
+                tasks.map((task) => (
+                  <div key={task.id} className="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                    <button
+                      onClick={() => toggleTask(task.id)}
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                        task.completed 
+                          ? 'bg-black border-black' 
+                          : 'border-gray-300 hover:border-black'
+                      }`}
+                    >
+                      {task.completed && <Check className="w-4 h-4 text-white" />}
+                    </button>
+                    <div className="flex-1">
+                      <p className={`font-medium ${task.completed ? 'line-through text-gray-500' : 'text-black'}`}>
+                        {task.task}
+                      </p>
+                      <p className="text-sm text-gray-500 flex items-center mt-1">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {task.time}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </CardContent>
           </Card>
         </div>
@@ -93,13 +120,29 @@ const PlanPage = () => {
               <p className="text-gray-600 text-sm mb-6">
                 Share your Plan with a friend to work on your goals together!
               </p>
-              <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                Create Plan
+              <Button 
+                className="w-full bg-purple-600 hover:bg-purple-700 mb-3"
+                onClick={createNewPlan}
+              >
+                Create New Plan
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => setShowCreateModal(true)}
+              >
+                Add Tasks to Current Plan
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      <CreatePlanModal 
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSave={addNewTasks}
+      />
     </div>
   );
 };

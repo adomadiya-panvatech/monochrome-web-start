@@ -6,6 +6,8 @@ import Layout from '@/components/Layout';
 import HomePage from '@/pages/HomePage';
 import PlanPage from '@/pages/PlanPage';
 import CommunityPage from '@/pages/CommunityPage';
+import CommunityDetailPage from '@/pages/CommunityDetailPage';
+import PostsPage from '@/pages/PostsPage';
 import ProfilePage from '@/pages/ProfilePage';
 import SettingsPage from '@/pages/SettingsPage';
 
@@ -30,6 +32,8 @@ const Index = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/plan" element={<PlanPage />} />
         <Route path="/community" element={<CommunityPage />} />
+        <Route path="/community/:communityId" element={<CommunityDetailPage />} />
+        <Route path="/posts" element={<PostsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Home, Calendar, Users, User, Settings } from 'lucide-react';
+import { Home, Calendar, Users, User, Settings, MessageSquare } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -50,11 +50,20 @@ const Layout = ({ children, onLogout }: LayoutProps) => {
               <Link
                 to="/community"
                 className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                  isActive('/community') ? 'bg-black text-white' : 'text-gray-600 hover:text-black hover:bg-gray-100'
+                  isActive('/community') || location.pathname.startsWith('/community/') ? 'bg-black text-white' : 'text-gray-600 hover:text-black hover:bg-gray-100'
                 }`}
               >
                 <Users className="w-4 h-4" />
                 <span>Community</span>
+              </Link>
+              <Link
+                to="/posts"
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                  isActive('/posts') ? 'bg-black text-white' : 'text-gray-600 hover:text-black hover:bg-gray-100'
+                }`}
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>Posts</span>
               </Link>
             </div>
           </div>
