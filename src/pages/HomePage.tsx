@@ -1,0 +1,147 @@
+
+import React from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Plus, Heart, Bookmark, Clock, Check } from 'lucide-react';
+
+const HomePage = () => {
+  const dailyTasks = [
+    { id: 1, task: 'Drink water', time: '8 AM', completed: false },
+    { id: 2, task: 'Have breakfast', time: '8 AM', completed: true },
+    { id: 3, task: 'Go for a walk', time: '12 PM', completed: false },
+    { id: 4, task: 'Meditation', time: '7 PM', completed: false },
+  ];
+
+  const recipes = [
+    { title: 'Healthy Sweet Potato & Black Bean Breakfast Burritos', author: 'Ambitious Kitchen', gradient: 'from-orange-400 to-red-400' },
+    { title: 'Spinach Goat Cheese Mini Quiches', author: 'Oh My Veggies', gradient: 'from-purple-400 to-pink-400' },
+  ];
+
+  const communityGroups = [
+    { name: 'Sleep Seekers', description: 'Struggling to get good sleep? Connect and get advice.', image: '🛌' },
+    { name: 'Movement Buddies', description: 'A place for accountability and support for physical activity.', image: '🏃‍♀️' },
+    { name: 'Healthy Eaters', description: 'Share healthy meal ideas and nutrition tips.', image: '🥗' },
+  ];
+
+  return (
+    <div>
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-black mb-2">Good afternoon, Test</h1>
+        <p className="text-gray-600">Ready to have a healthy day?</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Daily Plan */}
+        <div className="lg:col-span-1">
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <span>My Daily Plan</span>
+                <Button size="sm" variant="outline">
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </CardTitle>
+              <div className="flex items-center space-x-2">
+                <Check className="w-4 h-4 text-green-600" />
+                <span className="text-sm text-gray-600">1 of {dailyTasks.length} today</span>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {dailyTasks.map((task) => (
+                <div key={task.id} className="flex items-center space-x-3">
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                    task.completed ? 'bg-black border-black' : 'border-gray-300'
+                  }`}>
+                    {task.completed && <Check className="w-3 h-3 text-white" />}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`font-medium ${task.completed ? 'line-through text-gray-500' : 'text-black'}`}>
+                      {task.task}
+                    </p>
+                    <p className="text-sm text-gray-500 flex items-center">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {task.time}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Recipes Section */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold">Ready to have a healthy breakfast this morning?</h2>
+            </div>
+            <p className="text-gray-600 mb-6">Check out these healthy breakfast recipes!</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {recipes.map((recipe, index) => (
+                <Card key={index} className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow">
+                  <div className={`h-48 bg-gradient-to-br ${recipe.gradient} relative`}>
+                    <div className="absolute top-4 left-4">
+                      <Heart className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="absolute top-4 right-4">
+                      <Bookmark className="w-5 h-5 text-white" />
+                    </div>
+                  </div>
+                  <CardContent className="p-6">
+                    <p className="text-sm text-gray-600 mb-2">{recipe.author}</p>
+                    <h3 className="font-semibold text-black leading-tight">{recipe.title}</h3>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Community Groups Preview */}
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold">Community Groups</h2>
+              <Button variant="outline" size="sm">See all groups</Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {communityGroups.slice(0, 2).map((group, index) => (
+                <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="text-3xl">{group.image}</div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-black mb-2">{group.name}</h3>
+                        <p className="text-sm text-gray-600">{group.description}</p>
+                        <Button size="sm" className="mt-4 bg-black hover:bg-gray-800">
+                          Join
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Wellness Quote */}
+          <Card className="bg-gradient-to-r from-gray-900 to-black text-white">
+            <CardContent className="p-8">
+              <blockquote className="text-xl font-medium mb-4">
+                "Be kind and compassionate."
+              </blockquote>
+              <p className="text-gray-300">
+                When we share our questions, thoughts, and experiences with each other, 
+                let's always come from a place of respect.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;
