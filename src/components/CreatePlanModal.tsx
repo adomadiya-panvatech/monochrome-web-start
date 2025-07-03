@@ -3,17 +3,25 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { X, Plus, Clock } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface Task {
+  id: number;
+  task: string;
+  time: string;
+}
 
 interface CreatePlanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (tasks: any[]) => void;
+  onSave: (tasks: Task[]) => void;
 }
 
 const CreatePlanModal = ({ isOpen, onClose, onSave }: CreatePlanModalProps) => {
-  const [tasks, setTasks] = useState([
+  const [tasks, setTasks] = useState<Task[]>([
     { id: 1, task: '', time: '' }
   ]);
+  const { toast } = useToast();
 
   if (!isOpen) return null;
 
@@ -33,7 +41,24 @@ const CreatePlanModal = ({ isOpen, onClose, onSave }: CreatePlanModalProps) => {
 
   const handleSave = () => {
     const validTasks = tasks.filter(task => task.task.trim() && task.time.trim());
+    
+    if (validTasks.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please add at least one task with both description and time.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     onSave(validTasks);
+    toast({
+      title: "Success",
+      description: `Daily plan saved with ${validTasks.length} task${validTasks.length > 1 ? 's' : ''}!`,
+    });
+    
+    // Reset form
+    setTasks([{ id: 1, task: '', time: '' }]);
     onClose();
   };
 
