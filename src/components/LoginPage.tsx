@@ -158,7 +158,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               </div>
             )}
             
-            {isLogin && (
+            {/* {isLogin && (
               <Button
                 type="button"
                 onClick={fillDemoCredentials}
@@ -167,7 +167,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               >
                 Use Demo Credentials
               </Button>
-            )}
+            )} */}
             
             <Button
               type="submit"

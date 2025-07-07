@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from '@/components/LoginPage';
 import Layout from '@/components/Layout';
@@ -12,13 +11,18 @@ import ProfilePage from '@/pages/ProfilePage';
 import SettingsPage from '@/pages/SettingsPage';
 
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    // Retrieve from localStorage on initial load
+    return localStorage.getItem('isLoggedIn') === 'true';
+  });
 
   const handleLogin = () => {
+    localStorage.setItem('isLoggedIn', 'true');
     setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
     setIsLoggedIn(false);
   };
 
