@@ -1,132 +1,145 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { X, Plus, Clock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-
-interface Task {
-  id: number;
-  task: string;
-  time: string;
-}
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { planService } from '@/services/planService';
 
 interface CreatePlanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (tasks: Task[]) => void;
+  onSave: (planData: any) => void;
 }
 
 const CreatePlanModal = ({ isOpen, onClose, onSave }: CreatePlanModalProps) => {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, task: '', time: '' }
-  ]);
-  const { toast } = useToast();
+  const [planData, setPlanData] = useState({
+    title: '',
+    description: '',
+    category: '',
+    targetValue: '',
+    duration: '',
+  });
 
-  if (!isOpen) return null;
-
-  const addTask = () => {
-    setTasks([...tasks, { id: tasks.length + 1, task: '', time: '' }]);
-  };
-
-  const updateTask = (id: number, field: string, value: string) => {
-    setTasks(tasks.map(task => 
-      task.id === id ? { ...task, [field]: value } : task
-    ));
-  };
-
-  const removeTask = (id: number) => {
-    setTasks(tasks.filter(task => task.id !== id));
-  };
-
-  const handleSave = () => {
-    const validTasks = tasks.filter(task => task.task.trim() && task.time.trim());
-    
-    if (validTasks.length === 0) {
-      toast({
-        title: "Error",
-        description: "Please add at least one task with both description and time.",
-        variant: "destructive",
+  const handleSave = async () => {
+    try {
+      await planService.createPlan(planData);
+      onSave(planData);
+      setPlanData({
+        title: '',
+        description: '',
+        category: '',
+        targetValue: '',
+        duration: '',
       });
-      return;
+      onClose();
+    } catch (error) {
+      console.error('Error creating plan:', error);
     }
+  };
 
-    onSave(validTasks);
-    toast({
-      title: "Success",
-      description: `Daily plan saved with ${validTasks.length} task${validTasks.length > 1 ? 's' : ''}!`,
-    });
-    
-    // Reset form
-    setTasks([{ id: 1, task: '', time: '' }]);
-    onClose();
+  const handleInputChange = (field: string, value: string) => {
+    setPlanData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <Card className="w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Create Daily Plan</CardTitle>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="w-4 h-4" />
-            </Button>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Create New Wellness Plan</DialogTitle>
+          <DialogDescription>
+            Set up a new goal or habit to track your wellness journey.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="title" className="text-right">
+              Title
+            </Label>
+            <Input
+              id="title"
+              value={planData.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+              className="col-span-3"
+              placeholder="Enter plan title"
+            />
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {tasks.map((task, index) => (
-            <div key={task.id} className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium">Task {index + 1}</h4>
-                {tasks.length > 1 && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => removeTask(task.id)}
-                  >
-                    <X className="w-3 h-3" />
-                  </Button>
-                )}
-              </div>
-              <input
-                type="text"
-                placeholder="Enter task (e.g., Drink water)"
-                value={task.task}
-                onChange={(e) => updateTask(task.id, 'task', e.target.value)}
-                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <div className="flex items-center space-x-2">
-                <Clock className="w-4 h-4 text-gray-500" />
-                <input
-                  type="time"
-                  value={task.time}
-                  onChange={(e) => updateTask(task.id, 'time', e.target.value)}
-                  className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-                />
-              </div>
-            </div>
-          ))}
-          
-          <Button 
-            variant="outline" 
-            onClick={addTask}
-            className="w-full"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Another Task
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="description" className="text-right">
+              Description
+            </Label>
+            <Textarea
+              id="description"
+              value={planData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              className="col-span-3"
+              placeholder="Describe your plan"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="category" className="text-right">
+              Category
+            </Label>
+            <Select value={planData.category} onValueChange={(value) => handleInputChange('category', value)}>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fitness">Fitness</SelectItem>
+                <SelectItem value="nutrition">Nutrition</SelectItem>
+                <SelectItem value="mental-health">Mental Health</SelectItem>
+                <SelectItem value="sleep">Sleep</SelectItem>
+                <SelectItem value="mindfulness">Mindfulness</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="targetValue" className="text-right">
+              Target
+            </Label>
+            <Input
+              id="targetValue"
+              value={planData.targetValue}
+              onChange={(e) => handleInputChange('targetValue', e.target.value)}
+              className="col-span-3"
+              placeholder="Target value (e.g., 10000 steps)"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="duration" className="text-right">
+              Duration
+            </Label>
+            <Select value={planData.duration} onValueChange={(value) => handleInputChange('duration', value)}>
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select duration" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="daily">Daily</SelectItem>
+                <SelectItem value="weekly">Weekly</SelectItem>
+                <SelectItem value="monthly">Monthly</SelectItem>
+                <SelectItem value="yearly">Yearly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="flex justify-end space-x-2">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
           </Button>
-          
-          <div className="flex space-x-3 pt-4">
-            <Button variant="outline" onClick={onClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button onClick={handleSave} className="flex-1">
-              Save Plan
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          <Button 
+            onClick={handleSave}
+            disabled={!planData.title || !planData.category}
+          >
+            Create Plan
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

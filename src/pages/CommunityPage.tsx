@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -28,8 +27,7 @@ const CommunityPage = () => {
 
   const handleJoinGroup = async (groupId: number) => {
     console.log('Joining group:', groupId);
-    // This would typically be a POST request to join the group
-    // api.post('/user-relationships', { group_id: groupId, relationship_type: 'member' })
+    await communityService.joinCommunity(groupId);
   };
 
   if (isLoading) {

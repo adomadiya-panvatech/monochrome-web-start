@@ -49,4 +49,10 @@ export const planService = {
   
   // Habits
   getHabits: () => api.get<any[]>('/habits'),
+  
+  // Mock function for UI interactions (no actual API calls)
+  createPlan: async (planData: any) => {
+    console.log('Mock create plan:', planData);
+    return Promise.resolve({ id: Date.now(), ...planData });
+  },
 };

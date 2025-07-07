@@ -41,11 +41,14 @@ export const postService = {
   // Reactions/Likes
   getUserReactions: () => api.get<UserReaction[]>('/user-reactions'),
   
-  // Create post (this would be a POST request to your backend)
-  createPost: (data: { content: string; image_url?: string }) => 
-    api.post<Post>('/feed-items', data),
+  // Mock functions for UI interactions (no actual API calls)
+  createPost: async (data: { content: string; image_url?: string }) => {
+    console.log('Mock create post:', data);
+    return Promise.resolve({ id: Date.now(), ...data, author_id: 1, created_at: new Date().toISOString() } as Post);
+  },
     
-  // Create comment
-  createComment: (data: { content: string; post_id: number }) => 
-    api.post<Comment>('/comments', data),
+  createComment: async (data: { content: string; post_id: number }) => {
+    console.log('Mock create comment:', data);
+    return Promise.resolve({ id: Date.now(), ...data, author_id: 1, created_at: new Date().toISOString() } as Comment);
+  },
 };

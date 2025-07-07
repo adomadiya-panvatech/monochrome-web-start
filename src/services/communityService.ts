@@ -27,4 +27,10 @@ export const communityService = {
   
   // Get user relationships (for checking if user joined)
   getUserRelationships: () => api.get<any[]>('/user-relationships'),
+  
+  // Mock function for UI interactions (no actual API calls)
+  joinCommunity: async (groupId: number) => {
+    console.log('Mock join community:', groupId);
+    return Promise.resolve({ success: true });
+  },
 };
